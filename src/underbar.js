@@ -111,9 +111,45 @@ var _ = {};
   };
 
   // Produce a duplicate-free version of the array.
+
   _.uniq = function(array) {
+    
+///*
+
+    var result = [array[0]];
+    _.each(array, function(element) {
+      var flag = true;
+      _.each(result, function(elem) {
+        if (element === elem) {
+          flag = false;
+        }
+      });
+      if (flag) {
+          result.push(element);
+      }
+      flag = true;   
+    }); 
+    return result;
   };
 
+//*/
+
+/*
+  
+  return _.filter(array, function(num) {
+      //_.each(array, function(element,index) {
+        var counter = 0;
+        _.each(array, function(element) {
+          if (element === num) {
+            counter++;
+          }
+        });
+      //});
+      return counter > 1 ? false : true; 
+  });
+  };
+//to use _.filter() I need to access filter's _.each elements in my _.each method, is this possible?
+*/
 
   // Return the results of applying an iterator to each element.
   _.map = function(collection, iterator) {
