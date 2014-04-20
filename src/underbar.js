@@ -64,11 +64,8 @@ var _ = {};
      else { //if (typeOf collection === 'object') {
        for (var key in collection) {
          iterator(collection[key],key,collection);
-        }
-
-     }
-     
-     
+       }
+     } 
   };
 
   // Returns the index at which value can be found in the array, or -1 if value
@@ -79,7 +76,7 @@ var _ = {};
     // it uses the iteration helper `each`, which you will need to write.
     var result = -1;
 
-    _.each(array, function(item, index) {
+    _.each(array, function(item, index, array) {
       if (item === target && result === -1) {
         result = index;
       }
@@ -90,6 +87,13 @@ var _ = {};
 
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
+    var array = [];
+    _.each(collection, function(item) {
+      if (test(item)) {
+        array.push(item);
+      }
+    });
+    return array;
   };
 
   // Return all elements of an array that don't pass a truth test.
