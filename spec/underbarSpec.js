@@ -26,8 +26,6 @@ describe('first', function() {
 
 describe('last', function() {
   it('should pull the last element from an array', function() {
-    //var numbers = [1,2,3];
-    //_.last(numbers) = numbers.pop;
 
     expect(_.last([1,2,3])).to.equal(3);
   });

@@ -100,6 +100,14 @@ var _ = {};
   _.reject = function(collection, test) {
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
+    function negate(func) {
+      return function(x) {
+        return !func(x);
+      };
+    }
+
+    var notTest = negate(test);
+    return _.filter(collection,notTest);
   };
 
   // Produce a duplicate-free version of the array.
