@@ -1,5 +1,5 @@
 describe('identity', function() {
-  var uniqueObject = {};
+    var uniqueObject = {};
 
   it('should return whatever value is passed into it', function() {
     expect(_.identity(1)).to.equal(1);
@@ -26,6 +26,9 @@ describe('first', function() {
 
 describe('last', function() {
   it('should pull the last element from an array', function() {
+    //var numbers = [1,2,3];
+    //_.last(numbers) = numbers.pop;
+
     expect(_.last([1,2,3])).to.equal(3);
   });
 
