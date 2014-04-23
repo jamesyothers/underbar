@@ -469,7 +469,22 @@ add.call(whatever, 1,2)
   // TIP: This function's test suite will ask that you not modify the original
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
+  // http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
   _.shuffle = function(array) {
+    
+    var arr = array.slice();
+
+    _.each(arr, function(element, index, arr) {
+      var save = element;  
+      var random = Math.floor(Math.random() * (arr.length));
+      if (random !== index) {
+        arr[index] = arr[random];
+        arr[random] = save;
+      }
+    }); 
+    
+    return arr;
+
   };
 
 
