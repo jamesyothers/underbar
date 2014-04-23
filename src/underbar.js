@@ -441,6 +441,21 @@ add.call(whatever, 1,2)
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+    
+    var parameters = [];
+    
+    _.each(arguments, function(element, index) {
+      if (index > 1) {
+        parameters.push(element);
+      }
+    });
+
+    if (parameters.length === 0) {
+      setTimeout(func, wait);
+    } else {
+      setTimeout(func.apply(null, parameters), wait);
+    }
+
   };
 
 
