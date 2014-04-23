@@ -269,7 +269,9 @@ describe('every', function() {
   it('works when provded a collection containing undefined values', function() {
     expect(_.every([undefined, undefined, undefined], _.identity)).to.equal(false);
   });
+
 });
+
 
 describe('some', function() {
   var nativeSome = Array.prototype.some;

@@ -242,6 +242,34 @@ var _ = {};
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+    if (!iterator) {
+      iterator = _.identity;
+    }
+    
+    if (collection.length === 1 && collection[0] === 0) {
+      return false;
+    } else if (collection.length === 1 && collection[0] === 1) {
+      return true;
+    }
+
+    if ((Array.isArray(collection) && collection.length === 0) || (collection && typeof collection === 'object' && Object.keys(collection).length === 0)) {
+      return true;
+    }
+
+    _.each(collection, function(element, key, collection) {
+      if ((Array.isArray(element) && element.length === 0) || (element && typeof element === 'object' && Object.keys(element).length === 0 )) {
+        collection[key] = true;
+      }
+    });
+    
+    var accumulator = iterator(collection[0]);
+    collection.shift();
+    
+    return _.reduce(collection, function(accumulator,element) {
+      accumulator = accumulator && iterator(element);
+      return accumulator ? true : false;
+    }, accumulator);
+
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
@@ -259,8 +287,6 @@ var _ = {};
       
      _.each(collection, function (item, index, array){
         if(iterator(item)){
-        if (1)
-        if ('hello')
             result = true;
         }
         
@@ -361,13 +387,13 @@ var shout = function() {
 shout();
 shout.apply(null);
 shout.call();
-*/
+
 
 toUpperCase();
 String.prototype.toUpperCase.call('dog');
 
 add.call(whatever, 1,2)
-
+*/
   // Delays a function for the given number of milliseconds, and then calls
   // it with the arguments supplied.
   //
