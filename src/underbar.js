@@ -135,7 +135,8 @@ var _ = {};
 //*/
 
 /*
-  
+
+
   return _.filter(array, function(num) {
       //_.each(array, function(element,index) {
         var counter = 0;
@@ -212,6 +213,17 @@ var _ = {};
   //     return total + number;
   //   }, 0); // should be 6
   _.reduce = function(collection, iterator, accumulator) {
+    //if (Array.isArray(collection)) {
+      //accumulator || accumulator = collection[0];
+      //if (!accumulator) {
+      //  accumulator = collection[0];
+      //  collection.shift();
+      //}
+      _.each(collection, function(element) {
+        accumulator = iterator(accumulator, element);
+      });
+    //}
+    return accumulator;
   };
 
   // Determine if the array or object contains a given value (using `===`).
@@ -236,8 +248,26 @@ var _ = {};
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
-  };
 
+
+
+
+
+        
+      iterator || (iterator = _.identity);
+      var result = false;
+      
+     _.each(collection, function (item, index, array){
+        if(iterator(item)){
+        if (1)
+        if ('hello')
+            result = true;
+        }
+        
+    });
+    
+     return result;
+  };
 
   /**
    * OBJECTS
@@ -305,6 +335,38 @@ var _ = {};
   // instead if possible.
   _.memoize = function(func) {
   };
+
+               // if the arguments have been seen or computed before
+               // return the computed result
+               // but if the arguments are new
+               // compute the value, and store it, then return it
+               // need .apply(this,args)
+/*               call(context, arg1, arg2, arg3...)
+apply(context, [arg1, arg2,...])
+
+'dog'.toUpperCase(); 
+toUpperCase()
+
+
+var add = function(a,b) {
+    return a+b;
+};
+
+add(1,2);
+
+var shout = function() {
+    alert('hello');
+};
+
+shout();
+shout.apply(null);
+shout.call();
+*/
+
+toUpperCase();
+String.prototype.toUpperCase.call('dog');
+
+add.call(whatever, 1,2)
 
   // Delays a function for the given number of milliseconds, and then calls
   // it with the arguments supplied.
