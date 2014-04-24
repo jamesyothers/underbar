@@ -114,8 +114,6 @@ var _ = {};
 
   _.uniq = function(array) {
     
-///*
-
     var result = [array[0]];
     _.each(array, function(element) {
       var flag = true;
@@ -132,7 +130,7 @@ var _ = {};
     return result;
   };
 
-//*/
+
 
 /*
 
@@ -216,7 +214,7 @@ var _ = {};
     //if (Array.isArray(collection)) {
       //accumulator || (accumulator = collection[0]);
       //collection.shift();
-      //if (!accumulator) {
+      //if (!accumulator && collection.length > 1) {
       //  accumulator = collection[0];
       //  collection.shift();
       //}
@@ -244,43 +242,10 @@ var _ = {};
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
     iterator || (iterator = _.identity);
-    var result = true;
-    _.each(collection, function(item) {
-      if(!iterator(item)){
-        result = false;
-      }
-    });
-    return result;
 
-
-    /*
-    iterator || (iterator = _.identity);
-    
-    if (collection.length === 1 && collection[0] === 0) {
-      return false;
-    } else if (collection.length === 1 && collection[0] === 1) {
-      return true;
-    }
-
-    if ((Array.isArray(collection) && collection.length === 0) || (collection && typeof collection === 'object' && Object.keys(collection).length === 0)) {
-      return true;
-    }
-
-    _.each(collection, function(element, key, collection) {
-      if ((Array.isArray(element) && element.length === 0) || (element && typeof element === 'object' && Object.keys(element).length === 0 )) {
-        collection[key] = true;
-      }
-    });
-    
-    var accumulator = iterator(collection[0]);
-    collection.shift();
-    
-    return _.reduce(collection, function(accumulator,element) {
-      accumulator = accumulator && iterator(element);
-      return accumulator ? true : false;
-    }, accumulator);
-    */
-
+    return _.reduce(collection, function (accumulator,element) {
+             return (accumulator && Boolean(iterator(element)));
+           }, true);
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
@@ -296,8 +261,22 @@ var _ = {};
     });
      return result;
   };
+/*
+_.some ... true = at least one pass
+           false = all fail
 
+_.every(collection, iterator)           
+every  |  iterator  | all pass ... TRUE
+every  |  iterator  | some pass ... FALSE
 
+every  |  !iterator  | all pass the false test (all fail the original test) ... TRUE
+every  |  !iterator  | some pass ... FALSE
+
+every / !every | iterator / !iterator
+... all pass = TRUE
+some pass = TRUE
+all fail = FALSE
+*/
 
   /**
    * OBJECTS
@@ -318,34 +297,36 @@ var _ = {};
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
-    
-    var result = {};
-    //var flag = false;
 
-    _.each(arguments, function(element, index, arguments) { 
-      // if(Object.keys(collection).length === 0) {
-      for (var key in element) {
-        result[key] = element[key];
+    _.each(arguments, function(element, index) { 
+
+      if (index > 0) {
+        for (var key in element) {
+          obj[key] = element[key];
+        }
       }
     });
 
-    return result;
+    return obj;
+
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
-    var result = {};
+    //var result = {};
 
-    _.each(arguments, function(element, index, arguments) { 
+    _.each(arguments, function(element, index) { 
+
       for (var key in element) {
-        if (!(key in result)) {
-          result[key] = element[key];
+        if (!(key in obj)) {
+          obj[key] = element[key];
         }
       }
+
     });
 
-    return result;
+    return obj;
   };
 
 
@@ -395,11 +376,9 @@ var _ = {};
         return answers[value];
       } else {
         answers[value] = func(value);
-        return func(value);
+        return answers[value];
       }
     }  
-      
-
   };
 
                // if the arguments have been seen or computed before
@@ -407,33 +386,7 @@ var _ = {};
                // but if the arguments are new
                // compute the value, and store it, then return it
                // need .apply(this,args)
-/*               call(context, arg1, arg2, arg3...)
-apply(context, [arg1, arg2,...])
 
-'dog'.toUpperCase(); 
-toUpperCase()
-
-
-var add = function(a,b) {
-    return a+b;
-};
-
-add(1,2);
-
-var shout = function() {
-    alert('hello');
-};
-
-shout();
-shout.apply(null);
-shout.call();
-
-
-toUpperCase();
-String.prototype.toUpperCase.call('dog');
-
-add.call(whatever, 1,2)
-*/
   // Delays a function for the given number of milliseconds, and then calls
   // it with the arguments supplied.
   //
@@ -449,7 +402,7 @@ add.call(whatever, 1,2)
         parameters.push(element);
       }
     });
-
+  
     if (parameters.length === 0) {
       setTimeout(func, wait);
     } else {
@@ -470,6 +423,7 @@ add.call(whatever, 1,2)
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   // http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+  // Used Fisher Yates shuffle like underscore.js library
   _.shuffle = function(array) {
     
     var arr = array.slice();
@@ -477,10 +431,12 @@ add.call(whatever, 1,2)
     _.each(arr, function(element, index, arr) {
       var save = element;  
       var random = Math.floor(Math.random() * (arr.length));
+
       if (random !== index) {
         arr[index] = arr[random];
         arr[random] = save;
       }
+      
     }); 
     
     return arr;
