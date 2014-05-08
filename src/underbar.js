@@ -109,7 +109,17 @@ var _ = {};
     var notTest = negate(test);
     return _.filter(collection,notTest);
   };
-
+/* opposite of filter, one character different
+    _.reject = function(collection, test) {
+    var array = [];
+    _.each(collection, function(item) {
+      if (!test(item)) {
+        array.push(item);
+      }
+    });
+    return array;
+  };
+*/
   // Produce a duplicate-free version of the array.
 
   _.uniq = function(array) {
@@ -130,8 +140,31 @@ var _ = {};
     return result;
   };
 
+//Joe's recommendation: can also use something like unique items for keys, and if there is a repeat key if will just be overwritten
+
+/* Andrew's Solution
+ _.uniq = function(array) {
+    var result = [];
+
+    _.each(array, function(item) {
+      if (_.indexOf(result, item) === -1) {  //tests if result includes the item rather than looping though the entire result array
+        result.push(item);
+      }
+    });
+
+    return result;
+  };
 
 
+//Joel's solution
+    var pass = [];
+    _.each(collection, function (item, index, array){
+            if(!_.contains(pass, item)){
+                pass.push(item);
+            }
+    });
+    return pass;
+*/
 /*
 
 
@@ -262,6 +295,9 @@ var _ = {};
      return result;
   };
 /*
+
+// not every item fails, some should return true... otherwise return false
+
 _.some ... true = at least one pass
            false = all fail
 
@@ -276,6 +312,27 @@ every / !every | iterator / !iterator
 ... all pass = TRUE
 some pass = TRUE
 all fail = FALSE
+
+Andrew's solution:
+_.some = function (collection, iterator) {
+
+    iterator = iterator || function (element) {
+      return element;
+    };
+    
+    if (!iterator) {
+      iterator = _.identity;
+    }
+
+
+
+//refactored
+    return !_.every(collection, function(item) { 
+      return !iterator(item); 
+    });
+
+}
+
 */
 
   /**
@@ -296,6 +353,7 @@ all fail = FALSE
   //   }, {
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
+  // can also try Object.keys(obj)
   _.extend = function(obj) {
 
     _.each(arguments, function(element, index) { 
@@ -369,18 +427,19 @@ all fail = FALSE
   // instead if possible.
   _.memoize = function(func) {
    
-    var answers = [];
+    var answers = {};
 
     return function(value) {
       if (answers[value]) {
         return answers[value];
       } else {
         answers[value] = func(value);
+        //answers[value] = func.apply(this, value);
         return answers[value];
       }
     }  
   };
-
+//can remove "value" as a paramater and access "arguments" pseudo-array instead for multiple parameters
                // if the arguments have been seen or computed before
                // return the computed result
                // but if the arguments are new
@@ -410,7 +469,24 @@ all fail = FALSE
     }
 
   };
+  //short cut: var myArgs = Array.prototype.slice.call(arguments, 2)
+  //Jasen's solution:
+  /*
+  _.delay = function(func, wait) {
 
+    var myArgs = Array.prototype.slice.3(arguments, 2)
+
+    var myArgs = [];
+
+    for (var i = 2, l = arguments.length; i < l; i += 1) {
+      myArgs.push(arguments[i]);
+    }
+
+    setTimeout(function(){
+      func.apply(this, myArgs);
+    }, wait);
+  };
+  */
 
   /**
    * ADVANCED COLLECTION OPERATIONS
@@ -456,6 +532,8 @@ all fail = FALSE
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
   };
+
+  //use sort function
 
   // Zip together two or more arrays with elements of the same index
   // going together.
