@@ -39,15 +39,10 @@ var _ = {};
   // Like first, but for the last elements. If n is undefined, return just the
   // last element.
   _.last = function(array, n) {
-    if (n === undefined) {
-      return array[array.length -1];
-    }
-    else if ( n > array.length) {
+    if ( n > array.length) {
       return array;
     }
-    else {
-      return array.slice(array.length-n, array.length);
-    }
+    return n === undefined ? array[array.length - 1] : array.slice(array.length-n, array.length);
   };
 
   // Call iterator(value, key, collection) for each element of collection.
@@ -79,6 +74,7 @@ var _ = {};
     _.each(array, function(item, index, array) {
       if (item === target && result === -1) {
         result = index;
+        //return index;
       }
     });
 
@@ -121,7 +117,7 @@ var _ = {};
   };
 */
   // Produce a duplicate-free version of the array.
-
+/*
   _.uniq = function(array) {
     
     var result = [array[0]];
@@ -139,10 +135,10 @@ var _ = {};
     }); 
     return result;
   };
-
+*/
 //Joe's recommendation: can also use something like unique items for keys, and if there is a repeat key if will just be overwritten
+//Andrew's solution:
 
-/* Andrew's Solution
  _.uniq = function(array) {
     var result = [];
 
@@ -154,7 +150,7 @@ var _ = {};
 
     return result;
   };
-
+/*
 
 //Joel's solution
     var pass = [];
@@ -216,19 +212,32 @@ var _ = {};
   // Calls the method named by methodName on each value in the list.
   // Note: you will nead to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
+    //can eliminate "args" and use functionOrKey.arguments?
     var result = [];
+    _.each(collection, function(value, key){
     if (typeof functionOrKey === 'function') {
-      _.each(collection, function(value, key){
         result[key] = functionOrKey.apply(value, args);
-      });
     }
     else if (typeof functionOrKey === 'string'){
-      _.each(collection, function(value, key){
         result[key] = value[functionOrKey].apply(value, args);
-      });
     } 
+    });
  return result;   
-};
+ };
+/*
+ _.invoke = function(collection, functionOrKey, args) {
+    var outputArray = [];
+    _.each(collection, function(item) {
+        if (typeof(functionOrKey) === "function") {
+            outputArray.push(functionOrKey.apply(this, collection));
+        } else {
+            console.log('here1');
+            outputArray.push(collection[functionOrKey][item].apply(this, collection));
+        }
+    });
+    return outputArray;
+  };
+*/
 
   // Reduces an array or object to a single value by repetitively calling
   // iterator(previousValue, item) for each item. previousValue should be
@@ -433,8 +442,9 @@ _.some = function (collection, iterator) {
       if (answers[value]) {
         return answers[value];
       } else {
-        answers[value] = func(value);
-        //answers[value] = func.apply(this, value);
+        //answers[value] = func(value);  //works
+        //answers[value] = func.call(null, value);  //works
+        answers[value] = func.apply(null, arguments);  //works
         return answers[value];
       }
     }  
@@ -454,39 +464,25 @@ _.some = function (collection, iterator) {
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
     
-    var parameters = [];
+    //var parameters = [];    
+    //_.each(arguments, function(element, index) {
+    //  if (index > 1) {
+    //    parameters.push(element);
+    //  }
+    //});
     
-    _.each(arguments, function(element, index) {
-      if (index > 1) {
-        parameters.push(element);
-      }
-    });
+    //treat psuedo-array as array!
+    var parameters = Array.prototype.slice.call(arguments, 2);
   
     if (parameters.length === 0) {
       setTimeout(func, wait);
     } else {
-      setTimeout(func.apply(null, parameters), wait);
+      setTimeout(func.apply(this, parameters), wait);
     }
 
   };
-  //short cut: var myArgs = Array.prototype.slice.call(arguments, 2)
-  //Jasen's solution:
-  /*
-  _.delay = function(func, wait) {
+ 
 
-    var myArgs = Array.prototype.slice.3(arguments, 2)
-
-    var myArgs = [];
-
-    for (var i = 2, l = arguments.length; i < l; i += 1) {
-      myArgs.push(arguments[i]);
-    }
-
-    setTimeout(function(){
-      func.apply(this, myArgs);
-    }, wait);
-  };
-  */
 
   /**
    * ADVANCED COLLECTION OPERATIONS
@@ -502,16 +498,17 @@ _.some = function (collection, iterator) {
   // Used Fisher Yates shuffle like underscore.js library
   _.shuffle = function(array) {
     
+    //create a real array copy
     var arr = array.slice();
 
     _.each(arr, function(element, index, arr) {
       var save = element;  
       var random = Math.floor(Math.random() * (arr.length));
 
-      if (random !== index) {
+      //if (random !== index) {
         arr[index] = arr[random];
         arr[random] = save;
-      }
+      //}
       
     }); 
     
